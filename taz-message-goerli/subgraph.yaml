@@ -1,0 +1,30 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TazMessage
+    network: goerli
+    source:
+      address: "0xe1A073dD58AAB0e111b3033A21d442C61a157BF1"
+      abi: TazMessage
+      startBlock: 7460000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - MemberAdded
+        - MessageAdded
+        - OwnershipTransferred
+      abis:
+        - name: TazMessage
+          file: ./abis/TazMessage.json
+      eventHandlers:
+        - event: MemberAdded(indexed uint256,uint256)
+          handler: handleMemberAdded
+        - event: MessageAdded(string,string,string)
+          handler: handleMessageAdded
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/taz-message.ts

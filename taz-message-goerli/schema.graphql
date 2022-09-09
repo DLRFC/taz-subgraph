@@ -1,0 +1,19 @@
+type MemberAdded @entity {
+  id: ID!
+  groupId: BigInt! # uint256
+  identityCommitment: BigInt! # uint256
+}
+
+type MessageAdded @entity {
+  id: ID!
+  parentMessageId: String! # string
+  messageId: String! # string
+  messageContent: String! # string
+  timestamp: BigInt!
+}
+
+type OwnershipTransferred @entity {
+  id: ID!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+}

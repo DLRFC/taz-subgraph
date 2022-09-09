@@ -1,0 +1,36 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TazToken
+    network: goerli
+    source:
+      address: "0x3579A71e0dac0d99793100eE8BAFbBF59194Ed7f"
+      abi: TazToken
+      startBlock: 7460000
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - NewToken
+        - OwnershipTransferred
+        - Transfer
+      abis:
+        - name: TazToken
+          file: TazToken\abis\TazToken.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: NewToken(uint256,string)
+          handler: handleNewToken
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: TazToken\TazToken.wasm
