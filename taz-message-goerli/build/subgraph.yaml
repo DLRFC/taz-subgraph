@@ -6,7 +6,7 @@ dataSources:
     name: TazMessage
     network: goerli
     source:
-      address: "0xe1A073dD58AAB0e111b3033A21d442C61a157BF1"
+      address: "0x9335A0e0D9fBbd971E04E863C7Eb30c3F284289A"
       abi: TazMessage
       startBlock: 7460000
     mapping:
@@ -15,16 +15,16 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - MemberAdded
-        - MessageAdded
-        - OwnershipTransferred
+        - Message
+        - Violation
       abis:
         - name: TazMessage
           file: TazMessage\abis\TazMessage.json
       eventHandlers:
         - event: MemberAdded(indexed uint256,uint256)
           handler: handleMemberAdded
-        - event: MessageAdded(string,string,string)
+        - event: MessageAdded(uint256,uint256,string)
           handler: handleMessageAdded
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
+        - event: ViolationAdded(uint256,address)
+          handler: handleViolationAdded
       file: TazMessage\TazMessage.wasm

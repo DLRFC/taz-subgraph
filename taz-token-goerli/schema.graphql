@@ -1,33 +1,23 @@
-type Approval @entity {
-  id: ID!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-}
-
-type ApprovalForAll @entity {
-  id: ID!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-}
-
-type NewToken @entity {
+type Token @entity {
   id: ID!
   tokenId: BigInt! # uint256
   uri: String! # string
+  hasViolation: Boolean!
+  totalVotes: Int!
   timestamp: BigInt!
+  violations: [Violation!] @derivedFrom(field: "token")
+  votes: [Vote!] @derivedFrom(field: "token")
 }
 
-type OwnershipTransferred @entity {
+type Violation @entity {
   id: ID!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
+  reviewer: Bytes! # address
+  timestamp: BigInt!
+  token: Token!
 }
 
-type Transfer @entity {
+type Vote @entity {
   id: ID!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
+  timestamp: BigInt!
+  token: Token!
 }

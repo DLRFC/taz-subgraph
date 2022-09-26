@@ -1,12 +1,12 @@
 import {
   MemberAdded as MemberAddedEvent,
-  MessageAdded as MessageAddedEvent,
-  OwnershipTransferred as OwnershipTransferredEvent
+  MessageAdded,
+  ViolationAdded
 } from "../generated/TazMessage/TazMessage"
 import {
   MemberAdded,
-  MessageAdded,
-  OwnershipTransferred
+  Message,  
+  Violation
 } from "../generated/schema"
 
 export function handleMemberAdded(event: MemberAddedEvent): void {
@@ -18,24 +18,30 @@ export function handleMemberAdded(event: MemberAddedEvent): void {
   entity.save()
 }
 
-export function handleMessageAdded(event: MessageAddedEvent): void {
-  let entity = new MessageAdded(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+export function handleMessageAdded(event: MessageAdded): void {
+  let message = new Message(
+    event.params.messageId.toString()
   )
-  entity.parentMessageId = event.params.parentMessageId
-  entity.messageId = event.params.messageId
-  entity.messageContent = event.params.messageContent
-  entity.timestamp = event.block.timestamp
-  entity.save()
+  message.parentMessageId = event.params.parentMessageId
+  message.messageId = event.params.messageId
+  message.hasViolation = false
+  message.messageContent = event.params.messageContent
+  message.timestamp = event.block.timestamp
+  message.save()
 }
 
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-  entity.save()
+export function handleViolationAdded(event: ViolationAdded): void {
+  const message = Message.load(event.params.messageId.toString())
+  if(message) {
+    let violation = new Violation(
+      event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+    )
+    violation.message = event.params.messageId.toString()
+    violation.reviewer = event.params.reviewer
+    violation.timestamp = event.block.timestamp
+    violation.save()
+    
+    message.hasViolation = true
+    message.save()      
+  }
 }
